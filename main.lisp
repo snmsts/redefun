@@ -1,0 +1,16 @@
+(uiop/package:define-package :redefun/main (:use :cl) (:export :test1 :test2 :test3) (:shadow :defun))
+(in-package :redefun/main)
+;;;don't edit above
+(defmacro defun (name lambda-list &body body)
+  (let ((origin-name (symbol-name name))
+        (origin-package (symbol-package name))
+        (args (gensym))
+        (intern (gensym)))
+    `(cl:defun ,name (&rest ,args)
+       (let ((,intern (intern ,origin-name *package*)))
+         (apply (if (and (not (equal *package* ,origin-package))
+                         (not (equal (symbol-package ,intern) ,origin-package))
+                         (ignore-errors (fdefinition ,intern)))
+                    ,intern
+                    (lambda ,lambda-list ,@body))
+                ,args)))))

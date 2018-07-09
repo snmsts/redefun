@@ -1,0 +1,3 @@
+;;don't edit
+(DEFSYSTEM "redefun" :CLASS :PACKAGE-INFERRED-SYSTEM :COMPONENTS
+ ((:FILE "main")))
